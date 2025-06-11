@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>molの概念を学ぼう！</title>
+    <title>化学結合を学ぼう！</title>
     <style>
         * {
             margin: 0;
@@ -35,13 +35,12 @@
             font-size: 3rem;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            animation: bounce 2s infinite;
+            animation: pulse 2s infinite;
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .section {
@@ -66,188 +65,199 @@
         }
 
         .section h2::before {
-            content: "🧪";
+            content: "🔗";
             margin-right: 10px;
-            animation: rotate 2s linear infinite;
+            animation: bounce 2s infinite;
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
 
-        .atom-container {
+        .bond-simulator {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .element-selector {
+            margin: 20px 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            margin: 30px 0;
-            height: 200px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .element-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .element-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .h-btn { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; }
+        .o-btn { background: linear-gradient(45deg, #4ecdc4, #7fdbda); color: white; }
+        .c-btn { background: linear-gradient(45deg, #45b7d1, #6cc3d6); color: white; }
+        .n-btn { background: linear-gradient(45deg, #a8e6cf, #88d8a3); color: white; }
+        .f-btn { background: linear-gradient(45deg, #ffd93d, #ffb74d); color: white; }
+        .na-btn { background: linear-gradient(45deg, #ba68c8, #ce93d8); color: white; }
+        .cl-btn { background: linear-gradient(45deg, #81c784, #a5d6a7); color: white; }
+
+        .bond-arena {
+            height: 500px;
             background: linear-gradient(45deg, #f0f8ff, #e6f3ff);
             border-radius: 15px;
             position: relative;
             overflow: hidden;
+            border: 3px solid #667eea;
+            margin: 20px 0;
         }
 
-        .atom {
+        .atom-with-electrons {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .atom-nucleus {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            position: relative;
-            margin: 0 20px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .atom-h { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); }
-        .atom-o { background: linear-gradient(45deg, #4ecdc4, #7fdbda); }
-        .atom-c { background: linear-gradient(45deg, #45b7d1, #6cc3d6); }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .atom::after {
-            content: attr(data-symbol);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
             font-weight: bold;
             font-size: 1.2rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .calculator {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 30px;
-            border-radius: 15px;
-            color: white;
-            margin: 20px 0;
+        .nucleus-h { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); }
+        .nucleus-o { background: linear-gradient(45deg, #4ecdc4, #7fdbda); }
+        .nucleus-c { background: linear-gradient(45deg, #45b7d1, #6cc3d6); }
+        .nucleus-n { background: linear-gradient(45deg, #a8e6cf, #88d8a3); }
+        .nucleus-f { background: linear-gradient(45deg, #ffd93d, #ffb74d); }
+        .nucleus-na { background: linear-gradient(45deg, #ba68c8, #ce93d8); }
+        .nucleus-cl { background: linear-gradient(45deg, #81c784, #a5d6a7); }
+
+        .electron-shell {
+            position: absolute;
+            border: 2px dashed #667eea;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        .input-group {
-            margin: 15px 0;
+        .valence-shell {
+            width: 100px;
+            height: 100px;
+        }
+
+        .electron {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #ff4444, #cc0000);
+            border-radius: 50%;
+            position: absolute;
+            animation: electronOrbit 3s linear infinite;
+            box-shadow: 0 0 8px rgba(255, 68, 68, 0.6);
+        }
+
+        @keyframes electronOrbit {
+            from { transform: rotate(0deg) translateX(45px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(45px) rotate(-360deg); }
+        }
+
+        .moving-electron {
+            animation: electronTransfer 2s ease-in-out;
+        }
+
+        @keyframes electronTransfer {
+            0% { transform: translate(0, 0); opacity: 1; }
+            50% { transform: translate(var(--dx), var(--dy)); opacity: 0.7; }
+            100% { transform: translate(var(--dx), var(--dy)); opacity: 1; }
+        }
+
+        .shared-electron-pair {
+            position: absolute;
+            z-index: 3;
+        }
+
+        .shared-electron {
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #4444ff, #0000cc);
+            border-radius: 50%;
+            position: absolute;
+            animation: sharedOrbit 2s linear infinite;
+            box-shadow: 0 0 6px rgba(68, 68, 255, 0.6);
+        }
+
+        @keyframes sharedOrbit {
+            0% { transform: translateX(-15px); }
+            50% { transform: translateX(15px); }
+            100% { transform: translateX(-15px); }
+        }
+
+        .ion-charge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-
-        .input-group label {
-            min-width: 150px;
-            font-weight: bold;
-        }
-
-        .input-group input {
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            flex: 1;
-            max-width: 200px;
-        }
-
-        .result {
-            background: rgba(255,255,255,0.2);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .result h3 {
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-
-        .visual-demo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .demo-box {
-            background: linear-gradient(135deg, #a8edea, #fed6e3);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .demo-box:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .particles {
-            display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            margin: 20px 0;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 4;
         }
 
-        .particle {
-            width: 8px;
-            height: 8px;
-            background: #667eea;
-            border-radius: 50%;
-            margin: 2px;
-            animation: pulse 2s infinite;
+        .positive-charge {
+            color: #ff4444;
+            border: 2px solid #ff4444;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
+        .negative-charge {
+            color: #4444ff;
+            border: 2px solid #4444ff;
         }
 
-        .formula-box {
-            background: #f8f9fa;
-            border-left: 5px solid #667eea;
+        .electronegativity-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #4ecdc4);
             padding: 20px;
+            border-radius: 15px;
             margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1rem;
-        }
-
-        .highlight {
-            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 1s ease;
-            border-radius: 5px;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
             font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        .scale-item {
+            text-align: center;
+            flex: 1;
         }
 
         .explanation {
@@ -256,6 +266,243 @@
             border-radius: 15px;
             margin: 20px 0;
             border: 2px solid #ff9a9e;
+        }
+
+        .bond-types-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .bond-type-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+        }
+
+        .covalent-section { border-color: #4ecdc4; }
+        .ionic-section { border-color: #ff6b6b; }
+        .metallic-section { border-color: #ffd93d; }
+        .intermolecular-section { border-color: #ba68c8; }
+
+        .bond-animation {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .polarity-demo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .polarity-molecule {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .electron-cloud {
+            position: absolute;
+            background: radial-gradient(ellipse, rgba(255, 68, 68, 0.3), transparent);
+            border-radius: 50%;
+            animation: cloudShift 3s ease-in-out infinite;
+        }
+
+        @keyframes cloudShift {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+
+        .crystal-lattice {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .crystal-ion {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.8rem;
+            animation: crystalPulse 2s infinite;
+        }
+
+        @keyframes crystalPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .metal-lattice {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .metal-atom {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #c0c0c0, #808080);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+            animation: metalGlow 2s infinite;
+        }
+
+        @keyframes metalGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
+
+        .electron-sea {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #4444ff, #0000cc);
+            border-radius: 50%;
+            animation: electronSea 4s linear infinite;
+        }
+
+        @keyframes electronSea {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(200px, 50px); }
+            50% { transform: translate(50px, 150px); }
+            75% { transform: translate(150px, 20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .molecule-3d {
+            perspective: 1000px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .molecule-container {
+            transform-style: preserve-3d;
+            animation: rotate3d 6s infinite linear;
+            position: relative;
+        }
+
+        @keyframes rotate3d {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .molecule-atom {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .polymer-demo {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .polymerization-type {
+            margin: 30px 0;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .reaction-animation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .monomer {
+            padding: 15px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            margin: 5px;
+            position: relative;
+            animation: monomerFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes monomerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .functional-group {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .byproduct {
+            background: #95a5a6;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            animation: fadeOut 3s ease-out;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-30px); }
         }
 
         .tabs {
@@ -283,11 +530,11 @@
 
         .tab-content {
             display: none;
+            animation: fadeIn 0.5s ease;
         }
 
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.5s ease;
         }
 
         @keyframes fadeIn {
@@ -295,253 +542,465 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .mol-visual {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin: 30px 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
-            border-radius: 15px;
-        }
-
-        .mol-box {
-            text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .mol-box:hover {
-            transform: translateY(-5px);
-        }
-
-        .large-number {
-            font-size: 2rem;
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
             font-weight: bold;
-            color: #667eea;
-            margin: 10px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
         @media (max-width: 768px) {
             h1 { font-size: 2rem; }
-            .visual-demo { grid-template-columns: 1fr; }
-            .mol-visual { flex-direction: column; gap: 20px; }
-            .input-group { flex-direction: column; align-items: stretch; }
+            .bond-arena { height: 400px; }
+            .crystal-lattice { grid-template-columns: repeat(4, 1fr); }
+            .metal-lattice { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🧪 molの概念を学ぼう！ 🧪</h1>
-            <p>化学の世界への第一歩 - 原子から分子まで</p>
+            <h1>🔗 化学結合を学ぼう！ 🔗</h1>
+            <p>最外殻電子の動きで結合を理解しよう</p>
         </header>
 
         <div class="section">
-            <h2>1. 原子の相対質量とは？</h2>
+            <h2>1. 電気陰性度とは？</h2>
             <div class="explanation">
-                <p><strong>原子の相対質量</strong>は、原子の重さを比較するための数値です。炭素-12を基準（12）として、他の原子がどのくらいの重さかを表します。</p>
+                <p><strong>電気陰性度</strong>とは、原子が電子を引きつける力の強さです。この力の違いが結合の種類を決めます！</p>
             </div>
             
-            <div class="atom-container">
-                <div class="atom atom-h" data-symbol="H" title="水素: 1"></div>
-                <div class="atom atom-c" data-symbol="C" data-mass="12" title="炭素: 12"></div>
-                <div class="atom atom-o" data-symbol="O" data-mass="16" title="酸素: 16"></div>
-            </div>
-            
-            <div class="demo-box">
-                <h3>🎯 覚え方のコツ</h3>
-                <p>炭素を「12」と覚えれば、水素は「1」、酸素は「16」！</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="atom-progress"></div>
+            <div class="electronegativity-scale">
+                <div class="scale-item">
+                    <div>Na</div>
+                    <div>0.9</div>
+                    <div>弱い</div>
+                </div>
+                <div class="scale-item">
+                    <div>C</div>
+                    <div>2.5</div>
+                    <div>中間</div>
+                </div>
+                <div class="scale-item">
+                    <div>O</div>
+                    <div>3.5</div>
+                    <div>強い</div>
+                </div>
+                <div class="scale-item">
+                    <div>F</div>
+                    <div>4.0</div>
+                    <div>最強</div>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2>2. 原子量と分子量</h2>
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('atomic')">原子量</button>
-                <button class="tab" onclick="showTab('molecular')">分子量</button>
-            </div>
-            
-            <div class="tab-content active" id="atomic">
-                <div class="explanation">
-                    <p><strong>原子量</strong>は、その元素の原子の平均的な相対質量です。</p>
-                    <div class="formula-box">
-                        例：水素の原子量 = 1.008<br>
-                        　　炭素の原子量 = 12.01<br>
-                        　　酸素の原子量 = 15.999
-                    </div>
+            <h2>2. 電子の動きで結合を観察しよう！</h2>
+            <div class="bond-simulator">
+                <h3>🎮 最外殻電子と結合シミュレーター</h3>
+                <div class="element-selector">
+                    <button class="element-btn h-btn" onclick="selectElement('H', 2.1, 1)">H (1個)</button>
+                    <button class="element-btn o-btn" onclick="selectElement('O', 3.5, 6)">O (6個)</button>
+                    <button class="element-btn c-btn" onclick="selectElement('C', 2.5, 4)">C (4個)</button>
+                    <button class="element-btn f-btn" onclick="selectElement('F', 4.0, 7)">F (7個)</button>
+                    <button class="element-btn na-btn" onclick="selectElement('Na', 0.9, 1)">Na (1個)</button>
+                    <button class="element-btn cl-btn" onclick="selectElement('Cl', 3.0, 7)">Cl (7個)</button>
                 </div>
-            </div>
-            
-            <div class="tab-content" id="molecular">
-                <div class="explanation">
-                    <p><strong>分子量</strong>は、分子を構成する原子量の合計です。</p>
-                    <div class="formula-box">
-                        例：H₂O（水）の分子量<br>
-                        = H × 2 + O × 1<br>
-                        = 1 × 2 + 16 × 1 = <span class="highlight">18</span>
+                
+                <div class="bond-arena" id="bondArena">
+                    <div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 10px; max-width: 300px;">
+                        <div id="bondInfo">原子を2つ選んで電子の動きを観察しよう！<br>括弧内は最外殻電子の数です。</div>
                     </div>
                 </div>
                 
-                <div class="visual-demo">
-                    <div class="demo-box">
-                        <h4>H₂O（水）</h4>
-                        <div class="particles">
-                            <div class="particle" style="background: #ff6b6b;"></div>
-                            <div class="particle" style="background: #ff6b6b;"></div>
-                            <div class="particle" style="background: #4ecdc4;"></div>
-                        </div>
-                        <p>分子量：18</p>
+                <button onclick="clearArena()">リセット</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 結合の種類</h2>
+            <div class="bond-types-container">
+                <div class="bond-type-section covalent-section">
+                    <h3>🤝 共有結合</h3>
+                    <div class="explanation">
+                        <p>電気陰性度の差が<strong>小さい</strong>とき（0.4未満）、電子を共有して結合します。</p>
                     </div>
                     
-                    <div class="demo-box">
-                        <h4>CO₂（二酸化炭素）</h4>
-                        <div class="particles">
-                            <div class="particle" style="background: #45b7d1;"></div>
-                            <div class="particle" style="background: #4ecdc4;"></div>
-                            <div class="particle" style="background: #4ecdc4;"></div>
+                    <div class="bond-animation">
+                        <div class="atom-with-electrons">
+                            <div class="atom-nucleus nucleus-h">H</div>
+                            <div class="electron-shell valence-shell">
+                                <div class="electron" style="animation-delay: 0s;"></div>
+                            </div>
                         </div>
-                        <p>分子量：44</p>
+                        
+                        <div class="shared-electron-pair" style="margin: 0 20px;">
+                            <div class="shared-electron" style="animation-delay: 0s;"></div>
+                            <div class="shared-electron" style="animation-delay: 1s;"></div>
+                        </div>
+                        
+                        <div class="atom-with-electrons">
+                            <div class="atom-nucleus nucleus-h">H</div>
+                            <div class="electron-shell valence-shell">
+                                <div class="electron" style="animation-delay: 0.5s;"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>3. molとは何か？</h2>
-            <div class="explanation">
-                <p><strong>mol（モル）</strong>は、「個数を数える単位」です。1ダース＝12個のように、<strong>1mol＝6.02×10²³個</strong>を表します。</p>
-            </div>
-            
-            <div class="mol-visual">
-                <div class="mol-box">
-                    <h3>🥚 1ダース</h3>
-                    <div class="large-number">12個</div>
-                    <p>卵の数え方</p>
+                    
+                    <p><strong>例：</strong> H₂, O₂, CH₄（メタン）</p>
+                    <p>💡 電子を共有することで、両方の原子が安定になります</p>
                 </div>
                 
-                <div class="mol-box">
-                    <h3>🧪 1mol</h3>
-                    <div class="large-number">6.02×10²³個</div>
-                    <p>原子・分子の数え方</p>
-                </div>
-            </div>
-            
-            <div class="demo-box">
-                <h3>アボガドロ数って何？</h3>
-                <p>6.02×10²³という数を<strong>アボガドロ数</strong>と呼びます。これは「1molあたりの粒子の数」です。</p>
-                <button onclick="showAvogadro()">数の大きさを実感してみよう！</button>
-                <div id="avogadro-demo" style="display: none; margin-top: 20px;">
-                    <p>もし1秒に1個ずつ数えたら...</p>
-                    <div class="large-number" style="color: #ff6b6b;">約1900兆年</div>
-                    <p>かかります！とても大きな数ですね。</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>4. モル質量</h2>
-            <div class="explanation">
-                <p><strong>モル質量</strong>は、1molあたりの質量（g）です。数値的には原子量・分子量と同じですが、単位が[g/mol]になります。</p>
-            </div>
-            
-            <div class="formula-box">
-                例：<br>
-                H₂Oの分子量 = 18 → モル質量 = <span class="highlight">18 g/mol</span><br>
-                つまり、水1molの質量は18gということです！
-            </div>
-            
-            <div class="visual-demo">
-                <div class="demo-box">
-                    <h4>水 1mol</h4>
-                    <div class="large-number">18g</div>
-                    <p>約大さじ1杯分</p>
-                </div>
-                
-                <div class="demo-box">
-                    <h4>食塩 1mol</h4>
-                    <div class="large-number">58.5g</div>
-                    <p>約大さじ4杯分</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>5. モル体積</h2>
-            <div class="explanation">
-                <p><strong>モル体積</strong>は、気体1molが占める体積です。標準状態（0℃、1気圧）では、どんな気体でも<strong>22.4L</strong>になります。</p>
-            </div>
-            
-            <div class="demo-box">
-                <h3>🎈 気体の不思議</h3>
-                <p>水素でも酸素でも、1molなら同じ体積（22.4L）を占めます！</p>
-                <div class="visual-demo">
-                    <div class="mol-box">
-                        <h4>H₂ 1mol</h4>
-                        <div class="large-number">22.4L</div>
-                    </div>
-                    <div class="mol-box">
-                        <h4>O₂ 1mol</h4>
-                        <div class="large-number">22.4L</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>6. 物質量の計算</h2>
-            <div class="explanation">
-                <p>物質量（mol）、質量（g）、個数、体積（L）は相互に変換できます！</p>
-            </div>
-            
-            <div class="calculator">
-                <h3>🧮 mol計算機</h3>
-                <div class="input-group">
-                    <label>分子量:</label>
-                    <input type="number" id="molar-mass" placeholder="例: 18（水の場合）" onInput="calculate()">
-                    <span>g/mol</span>
-                </div>
-                
-                <div class="input-group">
-                    <label>質量:</label>
-                    <input type="number" id="mass" placeholder="例: 36" onInput="calculate()">
-                    <span>g</span>
-                </div>
-                
-                <div class="result">
-                    <h3>計算結果</h3>
-                    <p id="mol-result">物質量: - mol</p>
-                    <p id="particles-result">粒子数: - 個</p>
-                    <p id="volume-result">体積（標準状態）: - L</p>
-                </div>
-            </div>
-            
-            <div class="formula-box">
-                <strong>基本公式</strong><br>
-                物質量[mol] = 質量[g] ÷ モル質量[g/mol]<br>
-                粒子数[個] = 物質量[mol] × 6.02×10²³<br>
-                体積[L] = 物質量[mol] × 22.4（気体の場合）
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>7. 練習問題</h2>
-            <div class="demo-box">
-                <h3>🎯 チャレンジ問題</h3>
-                <p><strong>問題：</strong>水（H₂O）9gは何molですか？</p>
-                <button onclick="showAnswer()" id="answer-btn">答えを見る</button>
-                <div id="answer" style="display: none; margin-top: 20px;">
+                <div class="bond-type-section ionic-section">
+                    <h3>⚡ イオン結合</h3>
                     <div class="explanation">
-                        <p><strong>解答：</strong></p>
-                        <p>水の分子量 = 18</p>
-                        <p>物質量 = 9g ÷ 18g/mol = <span class="highlight">0.5mol</span></p>
-                        <p>🎉 正解です！</p>
+                        <p>電気陰性度の差が<strong>大きい</strong>とき（1.7以上）、電子が完全に移動してイオンになり結合します。</p>
+                    </div>
+                    
+                    <div class="bond-animation">
+                        <div class="atom-with-electrons">
+                            <div class="atom-nucleus nucleus-na">Na</div>
+                            <div class="electron-shell valence-shell">
+                                <div class="electron moving-electron" id="transferElectron"></div>
+                            </div>
+                            <div class="ion-charge positive-charge">+</div>
+                        </div>
+                        
+                        <div style="margin: 0 30px; color: #667eea; font-size: 2rem;">→</div>
+                        
+                        <div class="atom-with-electrons">
+                            <div class="atom-nucleus nucleus-cl">Cl</div>
+                            <div class="electron-shell valence-shell">
+                                <div class="electron" style="animation-delay: 0s;"></div>
+                                <div class="electron" style="animation-delay: 0.3s;"></div>
+                                <div class="electron" style="animation-delay: 0.6s;"></div>
+                                <div class="electron" style="animation-delay: 0.9s;"></div>
+                                <div class="electron" style="animation-delay: 1.2s;"></div>
+                                <div class="electron" style="animation-delay: 1.5s;"></div>
+                                <div class="electron" style="animation-delay: 1.8s;"></div>
+                                <div class="electron" style="animation-delay: 2.1s;"></div>
+                            </div>
+                            <div class="ion-charge negative-charge">-</div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>例：</strong> NaCl（食塩）, MgO（酸化マグネシウム）</p>
+                    <p>💡 電子が完全に移動して陽イオンと陰イオンが形成されます</p>
+                </div>
+                
+                <div class="bond-type-section metallic-section">
+                    <h3>✨ 金属結合</h3>
+                    <div class="explanation">
+                        <p>金属原子同士が価電子を放出し、<strong>電子の海</strong>を形成する結合です。</p>
+                    </div>
+                    
+                    <div class="metal-lattice">
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        <div class="metal-atom">Fe</div>
+                        
+                        <div class="electron-sea" style="top: 20px; left: 30px;"></div>
+                        <div class="electron-sea" style="top: 60px; left: 80px; animation-delay: 1s;"></div>
+                        <div class="electron-sea" style="top: 100px; left: 50px; animation-delay: 2s;"></div>
+                        <div class="electron-sea" style="top: 80px; left: 120px; animation-delay: 1.5s;"></div>
+                    </div>
+                    
+                    <p><strong>特徴：</strong> 電気を通す、延性・展性がある、金属光沢</p>
+                    <p>💡 自由電子が金属イオン間を動き回っています</p>
+                </div>
+                
+                <div class="bond-type-section intermolecular-section">
+                    <h3>🌊 分子間力</h3>
+                    <div class="explanation">
+                        <p>分子同士の<strong>弱い引力</strong>です。共有結合より弱いですが、物質の性質に大きく影響します。</p>
+                    </div>
+                    
+                    <div class="bond-animation">
+                        <div style="display: flex; align-items: center; gap: 30px;">
+                            <div class="atom-with-electrons">
+                                <div class="atom-nucleus nucleus-h">H</div>
+                                <div class="atom-nucleus nucleus-o" style="margin-top: 40px;">O</div>
+                                <div class="atom-nucleus nucleus-h" style="margin-top: 80px;">H</div>
+                            </div>
+                            
+                            <div style="color: #ba68c8; font-size: 2rem;">···</div>
+                            
+                            <div class="atom-with-electrons">
+                                <div class="atom-nucleus nucleus-h">H</div>
+                                <div class="atom-nucleus nucleus-o" style="margin-top: 40px;">O</div>
+                                <div class="atom-nucleus nucleus-h" style="margin-top: 80px;">H</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>種類：</strong> 水素結合、ファンデルワールス力</p>
+                    <p>💡 分子の部分的な電荷により弱い引力が働きます</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. 分子の形と極性</h2>
+            <div class="explanation">
+                <p>分子の形は電子対の反発によって決まり、極性は電気陰性度の違いから生まれます。</p>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showMoleculeTab('linear')">直線形</button>
+                <button class="tab" onclick="showMoleculeTab('bent')">折れ線形</button>
+                <button class="tab" onclick="showMoleculeTab('tetrahedral')">正四面体</button>
+                <button class="tab" onclick="showMoleculeTab('trigonal')">三角形</button>
+            </div>
+            
+            <div class="tab-content active" id="linear-tab">
+                <div class="molecule-3d">
+                    <div class="molecule-container">
+                        <div class="molecule-atom nucleus-o" style="transform: translateX(-60px);">O</div>
+                        <div class="molecule-atom nucleus-c" style="transform: translateX(0px);">C</div>
+                        <div class="molecule-atom nucleus-o" style="transform: translateX(60px);">O</div>
+                    </div>
+                </div>
+                
+                <div class="polarity-demo">
+                    <h4>CO₂の極性</h4>
+                    <div class="polarity-molecule">
+                        <div class="atom-nucleus nucleus-o">O</div>
+                        <div class="electron-cloud" style="width: 40px; height: 40px; left: -20px;"></div>
+                        <div style="margin: 0 20px;">====</div>
+                        <div class="atom-nucleus nucleus-c">C</div>
+                        <div style="margin: 0 20px;">====</div>
+                        <div class="atom-nucleus nucleus-o">O</div>
+                        <div class="electron-cloud" style="width: 40px; height: 40px; right: -20px;"></div>
+                    </div>
+                    <p>対称なので全体では<strong>無極性</strong></p>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="bent-tab">
+                <div class="molecule-3d">
+                    <div class="molecule-container">
+                        <div class="molecule-atom nucleus-o" style="transform: translateY(0px);">O</div>
+                        <div class="molecule-atom nucleus-h" style="transform: translate(-30px, 40px);">H</div>
+                        <div class="molecule-atom nucleus-h" style="transform: translate(30px, 40px);">H</div>
+                    </div>
+                </div>
+                
+                <div class="polarity-demo">
+                    <h4>H₂Oの極性</h4>
+                    <div class="polarity-molecule">
+                        <div style="position: relative;">
+                            <div class="atom-nucleus nucleus-o">O</div>
+                            <div class="electron-cloud" style="width: 60px; height: 60px; top: -30px; left: -10px;"></div>
+                            <div class="atom-nucleus nucleus-h" style="position: absolute; top: 50px; left: -25px;">H</div>
+                            <div class="atom-nucleus nucleus-h" style="position: absolute; top: 50px; right: -25px;">H</div>
+                        </div>
+                    </div>
+                    <p>非対称なので<strong>極性あり</strong>（δ-がO側に偏る）</p>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="tetrahedral-tab">
+                <div class="molecule-3d">
+                    <div class="molecule-container">
+                        <div class="molecule-atom nucleus-c" style="transform: translateZ(0px);">C</div>
+                        <div class="molecule-atom nucleus-h" style="transform: translate(0px, -50px) translateZ(30px);">H</div>
+                        <div class="molecule-atom nucleus-h" style="transform: translate(0px, 50px) translateZ(-30px);">H</div>
+                        <div class="molecule-atom nucleus-h" style="transform: translate(-50px, 0px) translateZ(0px);">H</div>
+                        <div class="molecule-atom nucleus-h" style="transform: translate(50px, 0px) translateZ(0px);">H</div>
+                    </div>
+                </div>
+                
+                <div class="polarity-demo">
+                    <h4>CH₄の極性</h4>
+                    <div class="polarity-molecule">
+                        <div style="position: relative;">
+                            <div class="atom-nucleus nucleus-c">C</div>
+                            <div class="atom-nucleus nucleus-h" style="position: absolute; top: -40px; left: 10px;">H</div>
+                            <div class="atom-nucleus nucleus-h" style="position: absolute; bottom: -40px; right: 10px;">H</div>
+                            <div class="atom-nucleus nucleus-h" style="position: absolute; left: -40px; top: 10px;">H</div>
+                            <div class="atom-nucleus nucleus-h" style="position: absolute; right: -40px; bottom: 10px;">H</div>
+                        </div>
+                    </div>
+                    <p>完全対称なので<strong>無極性</strong></p>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="trigonal-tab">
+                <div class="molecule-3d">
+                    <div class="molecule-container">
+                        <div class="molecule-atom" style="background: #9c27b0; transform: translateZ(0px);">B</div>
+                        <div class="molecule-atom nucleus-f" style="transform: translate(0px, -50px);">F</div>
+                        <div class="molecule-atom nucleus-f" style="transform: translate(-43px, 25px);">F</div>
+                        <div class="molecule-atom nucleus-f" style="transform: translate(43px, 25px);">F</div>
+                    </div>
+                </div>
+                
+                <div class="polarity-demo">
+                    <h4>BF₃の極性</h4>
+                    <div class="polarity-molecule">
+                        <div style="position: relative;">
+                            <div class="atom-nucleus" style="background: #9c27b0;">B</div>
+                            <div class="atom-nucleus nucleus-f" style="position: absolute; top: -40px; left: 10px;">F</div>
+                            <div class="atom-nucleus nucleus-f" style="position: absolute; bottom: 20px; left: -35px;">F</div>
+                            <div class="atom-nucleus nucleus-f" style="position: absolute; bottom: 20px; right: -35px;">F</div>
+                        </div>
+                    </div>
+                    <p>平面対称なので<strong>無極性</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. 結晶構造</h2>
+            <div class="explanation">
+                <p>イオンや原子の規則的な配列が結晶を形成します。結合の種類によって異なる構造を持ちます。</p>
+            </div>
+            
+            <div class="bond-types-container">
+                <div class="bond-type-section">
+                    <h3>💎 イオン結晶（NaCl型）</h3>
+                    <div class="crystal-lattice">
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                        <div class="crystal-ion nucleus-cl">Cl⁻</div>
+                        <div class="crystal-ion nucleus-na">Na⁺</div>
+                    </div>
+                    <p><strong>特徴：</strong> 硬い、脆い、融点が高い、電気を通さない</p>
+                    <p>💡 陽イオンと陰イオンが交互に配列</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>6. 高分子の世界</h2>
+            <div class="explanation">
+                <p><strong>高分子</strong>は、小さな分子（単量体）が多数つながった巨大な分子です。重合の仕方によって2つのタイプがあります。</p>
+            </div>
+            
+            <div class="polymer-demo">
+                <div class="polymerization-type">
+                    <h3>🔗 付加重合</h3>
+                    <div class="explanation">
+                        <p>二重結合が開いて単量体同士が直接つながる重合です。副生成物は生成されません。</p>
+                    </div>
+                    
+                    <div class="reaction-animation" id="additionPolymer">
+                        <div class="monomer">
+                            C=C
+                            <div class="functional-group">H</div>
+                        </div>
+                        <div style="font-size: 2rem; color: #667eea;">+</div>
+                        <div class="monomer">
+                            C=C
+                            <div class="functional-group">H</div>
+                        </div>
+                        <div style="font-size: 2rem; color: #667eea;">+</div>
+                        <div class="monomer">
+                            C=C
+                            <div class="functional-group">H</div>
+                        </div>
+                        <div style="font-size: 2rem; color: #667eea;">→</div>
+                        <div class="monomer">-C-C-</div>
+                        <div class="monomer">-C-C-</div>
+                        <div class="monomer">-C-C-</div>
+                    </div>
+                    
+                    <button onclick="startAdditionPolymerization()">付加重合開始！</button>
+                    <p><strong>例：</strong> ポリエチレン、ポリプロピレン、ポリスチレン</p>
+                </div>
+                
+                <div class="polymerization-type">
+                    <h3>💧 縮合重合</h3>
+                    <div class="explanation">
+                        <p>官能基同士が反応して結合し、小分子（水など）が副生成物として生成される重合です。</p>
+                    </div>
+                    
+                    <div class="reaction-animation" id="condensationPolymer">
+                        <div class="monomer">
+                            COOH
+                            <div class="functional-group">-OH</div>
+                        </div>
+                        <div style="font-size: 2rem; color: #667eea;">+</div>
+                        <div class="monomer">
+                            NH₂
+                            <div class="functional-group">-H</div>
+                        </div>
+                        <div style="font-size: 2rem; color: #667eea;">→</div>
+                        <div class="monomer">-CO-NH-</div>
+                        <div style="font-size: 2rem; color: #667eea;">+</div>
+                        <div class="byproduct">H₂O</div>
+                    </div>
+                    
+                    <button onclick="startCondensationPolymerization()">縮合重合開始！</button>
+                    <p><strong>例：</strong> ナイロン、ポリエステル、タンパク質</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>7. まとめクイズ</h2>
+            <div class="polymer-demo">
+                <h3>🎯 理解度チェック</h3>
+                <div id="quiz-container">
+                    <div class="explanation">
+                        <h4 id="quiz-question">問題1: NaClの結合で起こることは？</h4>
+                        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0;">
+                            <button onclick="checkAnswer('electron-transfer', 1)">電子が完全に移動</button>
+                            <button onclick="checkAnswer('electron-sharing', 1)">電子を共有</button>
+                            <button onclick="checkAnswer('electron-sea', 1)">電子の海を形成</button>
+                        </div>
+                        <div id="quiz-result" style="margin-top: 20px;"></div>
                     </div>
                 </div>
             </div>
@@ -549,56 +1008,305 @@
     </div>
 
     <script>
-        let animationStarted = false;
+        let selectedAtoms = [];
+        let currentQuizQuestion = 1;
+        const totalQuestions = 3;
 
-        function showTab(tabName) {
-            // すべてのタブとコンテンツを非アクティブに
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // 選択されたタブとコンテンツをアクティブに
-            event.target.classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-        }
+        const electronegativity = {
+            'H': 2.1, 'O': 3.5, 'C': 2.5, 'N': 3.0, 
+            'F': 4.0, 'Na': 0.9, 'Cl': 3.0
+        };
 
-        function showAvogadro() {
-            document.getElementById('avogadro-demo').style.display = 'block';
-        }
+        const valenceElectrons = {
+            'H': 1, 'O': 6, 'C': 4, 'N': 5, 
+            'F': 7, 'Na': 1, 'Cl': 7
+        };
 
-        function calculate() {
-            const molarMass = parseFloat(document.getElementById('molar-mass').value);
-            const mass = parseFloat(document.getElementById('mass').value);
-            
-            if (molarMass && mass) {
-                const mol = mass / molarMass;
-                const particles = mol * 6.02e23;
-                const volume = mol * 22.4;
+        const quizData = [
+            {
+                question: "問題1: NaClの結合で起こることは？",
+                correct: "electron-transfer",
+                explanation: "ナトリウム(0.9)と塩素(3.0)の電気陰性度の差は2.1で大きいため、電子が完全に移動してイオン結合を形成します！"
+            },
+            {
+                question: "問題2: H₂Oが極性を持つ理由は？",
+                correct: "asymmetric",
+                explanation: "水分子は折れ線形で非対称なため、酸素側に電子雲が偏って極性を持ちます！"
+            },
+            {
+                question: "問題3: 縮合重合の特徴は？",
+                correct: "byproduct",
+                explanation: "縮合重合では官能基が反応する際に水などの小分子が副生成物として生成されます！"
+            }
+        ];
+
+        function selectElement(symbol, en, valence) {
+            if (selectedAtoms.length < 2) {
+                const arena = document.getElementById('bondArena');
+                const atomContainer = createAtomWithElectrons(symbol, valence);
                 
-                document.getElementById('mol-result').textContent = `物質量: ${mol.toFixed(3)} mol`;
-                document.getElementById('particles-result').textContent = `粒子数: ${particles.toExponential(2)} 個`;
-                document.getElementById('volume-result').textContent = `体積（標準状態）: ${volume.toFixed(2)} L`;
+                const x = 100 + selectedAtoms.length * 300;
+                const y = 200;
+                
+                atomContainer.style.left = x + 'px';
+                atomContainer.style.top = y + 'px';
+                
+                arena.appendChild(atomContainer);
+                selectedAtoms.push({
+                    element: symbol, 
+                    electronegativity: en, 
+                    valence: valence,
+                    x: x, 
+                    y: y,
+                    container: atomContainer
+                });
+                
+                if (selectedAtoms.length === 2) {
+                    setTimeout(() => createBond(), 1000);
+                }
             }
         }
 
-        function showAnswer() {
-            document.getElementById('answer').style.display = 'block';
-            document.getElementById('answer-btn').style.display = 'none';
+        function createAtomWithElectrons(symbol, valence) {
+            const container = document.createElement('div');
+            container.className = 'atom-with-electrons';
+            
+            const nucleus = document.createElement('div');
+            nucleus.className = `atom-nucleus nucleus-${symbol.toLowerCase()}`;
+            nucleus.textContent = symbol;
+            
+            const shell = document.createElement('div');
+            shell.className = 'electron-shell valence-shell';
+            
+            for (let i = 0; i < valence; i++) {
+                const electron = document.createElement('div');
+                electron.className = 'electron';
+                electron.style.animationDelay = `${i * 0.3}s`;
+                electron.style.transform = `rotate(${(360 / valence) * i}deg) translateX(45px) rotate(-${(360 / valence) * i}deg)`;
+                shell.appendChild(electron);
+            }
+            
+            container.appendChild(nucleus);
+            container.appendChild(shell);
+            
+            return container;
         }
 
-        // アニメーション開始
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                document.getElementById('atom-progress').style.width = '100%';
-            }, 1000);
+        function createBond() {
+            const atom1 = selectedAtoms[0];
+            const atom2 = selectedAtoms[1];
+            const enDiff = Math.abs(atom1.electronegativity - atom2.electronegativity);
             
-            // 原子をクリックしたときのエフェクト
-            document.querySelectorAll('.atom').forEach(atom => {
-                atom.addEventListener('click', function() {
-                    this.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 200);
+            let bondType, bondInfo;
+            
+            if (enDiff < 0.4) {
+                bondType = "共有結合";
+                bondInfo = `電気陰性度の差: ${enDiff.toFixed(1)}<br><strong>電子を共有する共有結合です！</strong><br>両原子が電子を共有して安定化します。`;
+                createCovalentBond(atom1, atom2);
+            } else if (enDiff > 1.7) {
+                bondType = "イオン結合";
+                bondInfo = `電気陰性度の差: ${enDiff.toFixed(1)}<br><strong>電子が移動するイオン結合です！</strong><br>${atom1.element}から${atom2.element}へ電子が完全に移動します。`;
+                createIonicBond(atom1, atom2);
+            } else {
+                bondType = "極性共有結合";
+                bondInfo = `電気陰性度の差: ${enDiff.toFixed(1)}<br><strong>極性のある共有結合です！</strong><br>電子が${atom2.electronegativity > atom1.electronegativity ? atom2.element : atom1.element}側に偏ります。`;
+                createPolarCovalentBond(atom1, atom2);
+            }
+            
+            document.getElementById('bondInfo').innerHTML = 
+                `<strong>${atom1.element}-${atom2.element}: ${bondType}</strong><br>${bondInfo}`;
+        }
+
+        function createCovalentBond(atom1, atom2) {
+            const arena = document.getElementById('bondArena');
+            
+            // 共有電子対を作成
+            const sharedPair = document.createElement('div');
+            sharedPair.className = 'shared-electron-pair';
+            sharedPair.style.left = (atom1.x + 150) + 'px';
+            sharedPair.style.top = (atom1.y + 60) + 'px';
+            
+            const electron1 = document.createElement('div');
+            electron1.className = 'shared-electron';
+            const electron2 = document.createElement('div');
+            electron2.className = 'shared-electron';
+            electron2.style.animationDelay = '1s';
+            
+            sharedPair.appendChild(electron1);
+            sharedPair.appendChild(electron2);
+            arena.appendChild(sharedPair);
+        }
+
+        function createIonicBond(atom1, atom2) {
+            // より電気陰性度の低い原子から高い原子へ電子移動
+            const donor = atom1.electronegativity < atom2.electronegativity ? atom1 : atom2;
+            const acceptor = atom1.electronegativity < atom2.electronegativity ? atom2 : atom1;
+            
+            // イオン電荷を追加
+            const donorCharge = document.createElement('div');
+            donorCharge.className = 'ion-charge positive-charge';
+            donorCharge.textContent = '+';
+            donor.container.appendChild(donorCharge);
+            
+            const acceptorCharge = document.createElement('div');
+            acceptorCharge.className = 'ion-charge negative-charge';
+            acceptorCharge.textContent = '-';
+            acceptor.container.appendChild(acceptorCharge);
+            
+            // 電子の移動アニメーション
+            const movingElectron = document.createElement('div');
+            movingElectron.className = 'electron moving-electron';
+            movingElectron.style.left = (donor.x + 60) + 'px';
+            movingElectron.style.top = (donor.y + 60) + 'px';
+            movingElectron.style.setProperty('--dx', (acceptor.x - donor.x) + 'px');
+            movingElectron.style.setProperty('--dy', '0px');
+            
+            document.getElementById('bondArena').appendChild(movingElectron);
+            
+            setTimeout(() => {
+                movingElectron.remove();
+            }, 2000);
+        }
+
+        function createPolarCovalentBond(atom1, atom2) {
+            const arena = document.getElementById('bondArena');
+            
+            // 極性を示す電子雲
+            const cloud = document.createElement('div');
+            cloud.className = 'electron-cloud';
+            cloud.style.width = '80px';
+            cloud.style.height = '50px';
+            
+            if (atom2.electronegativity > atom1.electronegativity) {
+                cloud.style.left = (atom2.x + 40) + 'px';
+                cloud.style.top = (atom2.y + 55) + 'px';
+            } else {
+                cloud.style.left = (atom1.x + 40) + 'px';
+                cloud.style.top = (atom1.y + 55) + 'px';
+            }
+            
+            arena.appendChild(cloud);
+        }
+
+        function clearArena() {
+            const arena = document.getElementById('bondArena');
+            const elements = arena.querySelectorAll('.atom-with-electrons, .shared-electron-pair, .electron-cloud, .moving-electron');
+            
+            elements.forEach(element => element.remove());
+            
+            selectedAtoms = [];
+            document.getElementById('bondInfo').innerHTML = "原子を2つ選んで電子の動きを観察しよう！<br>括弧内は最外殻電子の数です。";
+        }
+
+        function showMoleculeTab(type) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(type + '-tab').classList.add('active');
+        }
+
+        function startAdditionPolymerization() {
+            const container = document.getElementById('additionPolymer');
+            container.innerHTML = '';
+            
+            // アニメーション表示
+            const stages = [
+                'C=C + C=C + C=C →',
+                '反応中...',
+                '-C-C-C-C-C-C- (ポリマー完成！)'
+            ];
+            
+            stages.forEach((stage, index) => {
+                setTimeout(() => {
+                    container.innerHTML = `<div style="font-size: 1.2rem; color: #667eea; font-weight: bold;">${stage}</div>`;
+                }, index * 1500);
+            });
+        }
+
+        function startCondensationPolymerization() {
+            const container = document.getElementById('condensationPolymer');
+            container.innerHTML = '';
+            
+            const stages = [
+                'COOH + NH₂ →',
+                '反応中...',
+                '-CO-NH- + H₂O ↑ (ポリマー + 水)'
+            ];
+            
+            stages.forEach((stage, index) => {
+                setTimeout(() => {
+                    container.innerHTML = `<div style="font-size: 1.2rem; color: #667eea; font-weight: bold;">${stage}</div>`;
+                }, index * 1500);
+            });
+        }
+
+        function checkAnswer(answer, questionNum) {
+            const result = document.getElementById('quiz-result');
+            const currentQ = quizData[questionNum - 1];
+            
+            if (answer === currentQ.correct) {
+                result.innerHTML = `<div style="color: #4ecdc4; font-weight: bold;">🎉 正解！</div><p>${currentQ.explanation}</p>`;
+            } else {
+                result.innerHTML = `<div style="color: #ff6b6b; font-weight: bold;">❌ 不正解</div><p>${currentQ.explanation}</p>`;
+            }
+            
+            setTimeout(() => {
+                if (currentQuizQuestion < totalQuestions) {
+                    nextQuestion();
+                } else {
+                    result.innerHTML += '<div style="margin-top: 20px; font-weight: bold; color: #667eea;">🎊 クイズ完了！お疲れさまでした！</div>';
+                }
+            }, 3000);
+        }
+
+        function nextQuestion() {
+            currentQuizQuestion++;
+            const questionElement = document.getElementById('quiz-question');
+            const currentQ = quizData[currentQuizQuestion - 1];
+            
+            questionElement.textContent = currentQ.question;
+            
+            const buttonsContainer = document.querySelector('#quiz-container .explanation > div:nth-child(2)');
+            buttonsContainer.innerHTML = '';
+            
+            if (currentQuizQuestion === 2) {
+                const buttons = [
+                    {text: '対称だから', value: 'symmetric'},
+                    {text: '非対称だから', value: 'asymmetric'},
+                    {text: '電子が多いから', value: 'electrons'}
+                ];
+                buttons.forEach(btn => {
+                    const button = document.createElement('button');
+                    button.textContent = btn.text;
+                    button.onclick = () => checkAnswer(btn.value, currentQuizQuestion);
+                    buttonsContainer.appendChild(button);
                 });
+            } else if (currentQuizQuestion === 3) {
+                const buttons = [
+                    {text: '副生成物ができる', value: 'byproduct'},
+                    {text: '二重結合が開く', value: 'double-bond'},
+                    {text: '電子が移動する', value: 'electron-move'}
+                ];
+                buttons.forEach(btn => {
+                    const button = document.createElement('button');
+                    button.textContent = btn.text;
+                    button.onclick = () => checkAnswer(btn.value, currentQuizQuestion);
+                    buttonsContainer.appendChild(button);
+                });
+            }
+            
+            document.getElementById('quiz-result').innerHTML = '';
+        }
+
+        // 初期化
+        window.addEventListener('load', function() {
+            // スクロールアニメーション
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(50px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             });
         });
 
@@ -614,16 +1322,6 @@
                     section.style.opacity = '1';
                     section.style.transform = 'translateY(0)';
                 }
-            });
-        });
-
-        // 初期状態設定
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                section.style.opacity = '0';
-                section.style.transform = 'translateY(50px)';
-                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             });
         });
     </script>
